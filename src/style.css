@@ -1,0 +1,52 @@
+h1, p {
+  font-family: Arial;
+}
+
+.popper-handle {
+  width: 20px;
+  height: 20px;
+  background: red;
+  border-radius: 20px;
+  z-index: 9999;
+}
+
+.header {
+  background-color: #F1F1F1;
+  text-align: left;
+  padding: 10px;
+  height: 10px;
+}
+
+.column {
+  float: left;
+  padding: 10px;
+}
+
+/* Left and right column */
+.column.side {
+  width: 15%;
+  height: 80%;
+  background-color: #F1F1F1;
+  border-width: 1px;
+  border-style: solid;
+}
+
+/* Middle column */
+.column.middle {
+  width: 50%;
+  height: 80%;
+  border: 1px;
+  border-width: 1px;
+  border-style: solid;
+  background-color: #f5f6fe;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+
+
