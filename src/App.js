@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import "./style.css";
 import CytoscapeComponent from "react-cytoscapejs";
 import Graph from "./Graph";
-import NameForm from "./NameForm";
+import NewNodeForm from "./NewNodeForm";
 import Label from "./Label";
 
 const App = () => {
@@ -202,7 +202,7 @@ const App = () => {
             backgroundColor: "#f5f6fe"
           }}
         >
-         <NameForm caption="New :" onSubmit = {handleAdd} />
+         <NewNodeForm caption="New :" onSubmit = {handleAdd} />
          <Label caption="Node Info :" value={origin.label}/><br/>
          <button onClick={handleRelate}>Relate</button>
          <Graph ref={graphRef} graphData={graphData} layout={layout} styleSheet={styleSheet} width={width} height={height} />

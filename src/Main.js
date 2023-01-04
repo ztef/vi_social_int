@@ -1,22 +1,44 @@
 import * as React from 'react';
 import Graph from "./Graph.js";
-import NameForm from "./NameForm.js";
-import Label from "./Label.js";
+import NewNodeForm from "./NewNodeForm.js";
+import NodeEditor from './NodeEditor.js';
+import EdgeEditor from "./EdgeEditor.js";
 import "./style.css";
 
 
 import { styled } from '@mui/material/styles/index.js';
-import Box from '@mui/material/Box/index.js';
+//import Box from '@mui/material/Box/index.js';
 import Paper from '@mui/material/Paper/index.js';
 import Grid from '@mui/material/Grid/index.js';
+import { Box, ThemeProvider, createTheme } from '@mui/system/index.js';
+
+
+const theme1 = createTheme({
+  palette: {
+    background: {
+      paper: '#fff',
+    },
+    text: {
+      primary: '#173A5E',
+      secondary: '#46505A',
+    },
+    action: {
+      active: '#001E3C',
+    },
+    success: {
+      dark: '#009688',
+    },
+  },
+});
+
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
- // padding: theme.spacing(1),
- // textAlign: 'center',
+  ...theme.typography.body1,
   color: theme.palette.text.secondary,
 }));
+
+
 
 const section = {
   height: "100%",
@@ -39,8 +61,8 @@ constructor(props) {
     this.lastID = React.createRef();
     this.graphRef = React.createRef();
     this.state = {
-      selected_node: {},
-      selected_edge: {}
+      selected_node: null,
+      selected_edge: null
     }
   }
 
@@ -67,7 +89,7 @@ constructor(props) {
   graphData = {
     nodes: [
       { data: { id: "1", label: "Esteban Ortiz", type: "persona" } },
-      { data: { id: "2", label: "Mexico", type: "pais" } },
+      { data: { id: "2", label: "Mexico", type: "territorio" } },
       
     ],
     edges: [
@@ -122,7 +144,7 @@ constructor(props) {
       }
     },
     {
-      selector: "node[type='pais']",
+      selector: "node[type='territorio']",
       style: {
         shape: "rectangle"
       }
@@ -158,108 +180,114 @@ constructor(props) {
 
   ];
 
-  handleAdd = (node_data) => {
+  handleAddNode = (node_data) => {
     
-    let max = 4;
-    //this.graphRef.current.getMax();
-    console.log("MAX : ",max);
-//id: max + 1,
-    let n = { data: {  label: node_data._object, type: node_data._class } };
-   
+    let n = { data: node_data };
     console.log(n);
     this.graphRef.current.add(n);
     
   };
+
+  handleUpdateNode = (node_data) => {
+    
+    let n = { data: node_data };
+    console.log(n);
+    this.graphRef.current.updateNode(n);
+    
+  };
+
+  handleUpdateEdge = (edge_data) => {
+    
+    let e = { data: edge_data };
+    console.log(e);
+    this.graphRef.current.updateEdge(e);
+    
+  };
+
 
    
 
   callBack = (action, n) => {    
       if(action == "node_selection"){
          console.log(n)
-         this.setState({selected_node: n.data});
+         if(n){
+           this.setState({selected_node: n.data});
+         } else {
+          this.setState({selected_node: null});
+         }
       }
 
       if(action == "edge_selection"){
         console.log(n)
-        this.setState({selected_edge: n.data});
+        if(n){
+          this.setState({selected_edge: n.data});
+        } else {
+          this.setState({selected_edge: null});
+        }
      }
 
   }
   
   render() {
     return (
-
-    <Box sx={{ flexGrow: 1 }}>
-       <Grid container spacing={1}>
-        <Grid item xs={12}>
-          <Item>vi+social intelligence v.0.1 </Item>
-        </Grid>
-       </Grid>
-       <br/>
-      
-      <Grid container 
-          spacing={1}
-          alignItems="stretch"
-        >
-        <Grid item xs={2}>
-          <Item>
-          <div style={section}>Options</div>
-          </Item>
-        </Grid>
-        <Grid item xs={8}>
-          <Item> <NameForm caption="New :" onSubmit = {this.handleAdd} /></Item><br/>
+ 
+<Box
+      sx={{
+        width: '100%',
+        height: '100%',
+        color: '#fff',
+        '& > .MuiBox-root > .MuiBox-root': {
+          p: 1,
+          borderRadius: 2,
+          fontSize: '0.875rem',
+          fontWeight: '700',
+        },
+      }}
+    >
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: 1,
+          gridTemplateRows: 'auto',
+          gridTemplateAreas: `"header header header header"
+        "main main main sidebar"
+        "footer footer footer footer"`,
+        }}
+      >
+        <Box sx={{ gridArea: 'header', bgcolor: 'background.paper' }}>
+        <Item>vi+social intelligence v.0.2 </Item>
+        </Box>
+        <Box sx={{ gridArea: 'main', bgcolor: 'background.paper' }}>
+        <Item> <NewNodeForm caption="New :" onSubmit = {this.handleAddNode} /></Item><br/>
           <Item> 
           <Graph callBack={this.callBack} ref={this.graphRef} graphData={this.graphData} layout={this.layout} styleSheet={this.styleSheet} width={this.width} height={this.height} />
           </Item>
-        </Grid>
-        <Grid item xs={2}>
-          <Item> 
+        </Box>
+        <Box sx={{  gridArea: 'sidebar', bgcolor: 'error.main' }}>
+        <Item> 
           <div style={section}>
-             <Label caption="Selected Node :" value={this.state.selected_node.label}/>
-             <div style={section}>
-             <Label caption="Selected Rel :" value={this.state.selected_edge.label}/>
-            </div>
+            {this.state.selected_node
+             ? <NodeEditor caption="Selected Node :" value={this.state.selected_node} onSubmit={this.handleUpdateNode}/>
+             :<></>
+             }
+             {this.state.selected_edge
+             ? <EdgeEditor caption="Selected Node :" value={this.state.selected_edge} onSubmit={this.handleUpdateEdge}/>            
+             :<></>
+             }
           </div>
            </Item>
-          
-        </Grid>
-      </Grid>
+        </Box>
+        <Box sx={{ gridArea: 'footer', bgcolor: 'warning.dark' }}>
+          Footer
+        </Box>
+      </Box>
     </Box>
-
-
+    
+     
       
     );
   }
 }
 
 
-/*
-<div>
-         <div class='header'>
-          vi+social intelligence v.0.1 
-         </div>
-          
-          <div class="row">
-              <div class="column side">
-                
-                <p>MENU</p>
-              </div>
-              
-              <div class="column middle">
-                <div class='header'>
-                 <NameForm caption="New :" onSubmit = {this.handleAdd} />
-                </div>
-                <div>
-                  <Graph callBack={this.callBack} ref={this.graphRef} graphData={this.graphData} layout={this.layout} styleSheet={this.styleSheet} width={this.width} height={this.height} />
-                </div>
-              </div>
-             
-              <div class="column side">
-                <h2>Detalle</h2>
-                <Label caption="Selected :" value={this.state.selected.label}/>
-              </div>
-              
-           </div>
-         
-    </div>
-*/

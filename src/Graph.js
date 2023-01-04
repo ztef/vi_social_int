@@ -74,6 +74,21 @@ const Graph = React.forwardRef(({
       //myCyRef.fit();
     },
 
+    updateNode(node_data) {     
+      
+      let ele = myCyRef.getElementById(node_data.data.id)
+      ele.data('label', node_data.data.label);
+      ele.data('type', node_data.data.type);
+    },
+
+    updateEdge(edge_data) {     
+      
+      let ele = myCyRef.getElementById(edge_data.data.id)
+      ele.data('label', edge_data.data.label);
+    },
+
+  
+
     getMax(){
       var max = myCyRef.nodes().max(function(ele, i, eles){
          
@@ -86,12 +101,16 @@ const Graph = React.forwardRef(({
   );
 
   const setCurrentNode = (n) => {
-    selectedNode = n.json()
-    callBack("node_selection",selectedNode);
+    
+      selectedNode = n;
+    
+      callBack("node_selection",selectedNode);
   };
 
   const setCurrentEdge = (e) => {
-    selectedEdge = e.json()
+    
+     selectedEdge = e;
+    
     callBack("edge_selection",selectedEdge);
   };
   
@@ -206,6 +225,8 @@ const Graph = React.forwardRef(({
                       if( evtTarget === cy ){
                         console.log("tappp");
                         removeHandle();
+                        setCurrentNode(null);
+                        setCurrentEdge(null);
                         cy.fit();
                       } 
                    
@@ -213,16 +234,16 @@ const Graph = React.forwardRef(({
 
                   cy.on("tap", "node", evt => {
                     var n = evt.target;
-                       
                         console.log("tappp node ");
-                        setCurrentNode(n)                 
+                        setCurrentNode(n.json())   
+                        setCurrentEdge(null);              
                   });
 
                   cy.on("tap", "edge", evt => {
-                    var e = evt.target;
-                       
+                    var e = evt.target;                       
                         console.log("tappp edge ");
-                        setCurrentEdge(e)                 
+                        setCurrentEdge(e.json());
+                        setCurrentNode(null);                 
                   });
 
 

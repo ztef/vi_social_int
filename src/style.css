@@ -49,4 +49,10 @@ h1, p {
 }
 
 
-
+.resizable {
+  /*height: 150px;
+  width: 150px;
+  border: 1px solid #333;*/
+  resize: horizontal;
+  overflow: auto;
+}
